@@ -2,6 +2,7 @@ import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+import google_auth_oauthlib
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import time
@@ -39,7 +40,15 @@ class GoogleSheetsClient:
                 credentials_dict = json.loads(decoded_credentials)
 
                 flow = InstalledAppFlow.from_client_config(credentials_dict, self.SCOPES)
-                creds = flow.run_console()  # Use run_console instead of run_local_server
+                auth_url, _ = flow.authorization_url(prompt='consent')
+
+                print('Please go to this URL and authorize the application:')
+                print(auth_url)
+
+                code = input('Enter the authorization code: ')
+                flow.fetch_token(code=code)
+
+                creds = flow.credentials
 
                 # Save the credentials for the next run
                 with open(token_path, 'w') as token:
