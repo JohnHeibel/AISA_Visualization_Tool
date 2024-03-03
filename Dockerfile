@@ -17,4 +17,4 @@ EXPOSE 8050
 ENV NAME World
 
 # Run app.py when the container launches
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=8050"]
+CMD ["python3", "app.py"]
