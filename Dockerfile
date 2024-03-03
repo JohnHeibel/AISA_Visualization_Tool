@@ -11,13 +11,13 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 8050 available to the world outside this container
-EXPOSE 8050
+EXPOSE 7860
 
 # Define environment variable
 ENV NAME World
 
 # Run app.py when the container launches
 CMD gunicorn index:server \
---bind 0.0.0.0:8050 \
+--bind 0.0.0.0:7860 \
 --timeout 120 \
 --workers 1
