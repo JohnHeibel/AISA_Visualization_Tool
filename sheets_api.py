@@ -39,7 +39,7 @@ class GoogleSheetsClient:
                 credentials_dict = json.loads(decoded_credentials)
 
                 flow = InstalledAppFlow.from_client_config(credentials_dict, self.SCOPES)
-                creds = flow.run_local_server(port=0)
+                creds = flow.run_console()  # Use run_console instead of run_local_server
 
                 # Save the credentials for the next run
                 with open(token_path, 'w') as token:
