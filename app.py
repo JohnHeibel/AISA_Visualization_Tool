@@ -10,6 +10,7 @@ import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 import sheets_api
 import plotly.graph_objects as go
+
 def get_club_values():
     clubs_spread = "11_AhmjJIgkGi6JGtYYKehpC1UJ2ET1Ag4oV76mO5RCM"
     client = sheets_api.GoogleSheetsClient(clubs_spread)

@@ -17,4 +17,7 @@ EXPOSE 8050
 ENV NAME World
 
 # Run app.py when the container launches
-CMD ["python3", "app.py"]
+CMD gunicorn index:server \
+--bind 0.0.0.0:8050 \
+--timeout 120 \
+--workers 1
