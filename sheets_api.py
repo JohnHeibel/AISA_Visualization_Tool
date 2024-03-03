@@ -6,28 +6,48 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import time
 import random
+import json
+import os
+import base64
 class GoogleSheetsClient:
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
     def __init__(self, spreadsheet_id):
         self.spreadsheet_id = spreadsheet_id
+        self.authorized = False  # Add an authorized flag
         self.creds = self._get_credentials()
         self.service = self._build_service()
+        if self.creds and self.creds.valid:
+            self.authorized = True  # Set to True after successful authorization
+
+
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
     def _get_credentials(self):
         creds = None
-        if os.path.exists("token.json"):
-            creds = Credentials.from_authorized_user_file("token.json", self.SCOPES)
+        token_path = 'token.json'  # Path where the token will be stored
+
+        # Try to load saved credentials
+        if os.path.exists(token_path):
+            creds = Credentials.from_authorized_user_file(token_path, self.SCOPES)
+
+        # If there are no valid saved creds, start the flow
         if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    "credentials.json", self.SCOPES
-                )
+            if 'GOOGLE_CREDENTIALS_BASE64' in os.environ:
+                base64_credentials = os.environ['GOOGLE_CREDENTIALS_BASE64']
+                decoded_credentials = base64.b64decode(base64_credentials).decode('utf-8')
+                credentials_dict = json.loads(decoded_credentials)
+
+                flow = InstalledAppFlow.from_client_config(credentials_dict, self.SCOPES)
                 creds = flow.run_local_server(port=0)
-            with open("token.json", "w") as token:
-                token.write(creds.to_json())
+
+                # Save the credentials for the next run
+                with open(token_path, 'w') as token:
+                    token.write(creds.to_json())
+
+        if not creds or not creds.valid:
+            raise Exception("No valid credentials provided.")
+
         return creds
 
     def _build_service(self):

@@ -12,8 +12,14 @@ import sheets_api
 import plotly.graph_objects as go
 def get_club_values():
     clubs_spread = "11_AhmjJIgkGi6JGtYYKehpC1UJ2ET1Ag4oV76mO5RCM"
-    client = sheets_api.GoogleSheetsClient(clubs_spread)  # Ensure this client is correctly initialized
-    range_data = client.get_values("A3:E")  # Fetch all required data in one request
+    client = sheets_api.GoogleSheetsClient(clubs_spread)
+
+    # Check if the client is authorized before proceeding
+    if not client.authorized:
+        print("Client not authorized yet. Skipping data fetch.")
+        return [], [], [], []  # Return empty lists or handle as appropriate for your application
+
+    range_data = client.get_values("A3:E")  # This line now runs only if authorized
 
     # Initialize lists to hold column data
     clubs = []
