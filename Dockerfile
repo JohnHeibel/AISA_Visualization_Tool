@@ -2,7 +2,7 @@
 FROM python:3.11
 
 # Set the working directory in the container
-WORKDIR /python-docker
+WORKDIR /app
 
 # Copy the current directory contents into the container at /usr/src/app
 COPY . .
@@ -17,4 +17,4 @@ EXPOSE 8050
 ENV NAME World
 
 # Run app.py when the container launches
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=8050"]
